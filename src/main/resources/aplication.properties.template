@@ -1,4 +1,4 @@
-#keep actual application.properties in .gitignored
+#keep actual application.properties locally, add in .gitignore
 
 server.port = 8082
 
