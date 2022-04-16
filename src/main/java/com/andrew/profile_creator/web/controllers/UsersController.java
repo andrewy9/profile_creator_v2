@@ -1,7 +1,7 @@
 package com.andrew.profile_creator.web.controllers;
 
-import com.andrew.profile_creator.models.User;
-import com.andrew.profile_creator.services.UserService;
+import com.andrew.profile_creator.models.Users;
+import com.andrew.profile_creator.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/user")
-public class UserController {
+@RequestMapping(path = "api/v1/users")
+public class UsersController {
 
-    private UserService userService;
+    private UsersService usersService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
     }
 
     @GetMapping
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public List<Users> getUsers() {
+        return usersService.getUsers();
     }
 }

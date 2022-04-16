@@ -1,24 +1,35 @@
 package com.andrew.profile_creator.models;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
-public class User {
-    private String id;
+@Entity
+public class Users {
+    @Id
+    @SequenceGenerator(
+            name = "users_sequence",
+            sequenceName = "users_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "users_sequence"
+    )
+    private Long id;
     private LocalDate created_at;
     private String email;
     //Password?
 
-
-    public User() {
+    public Users() {
     }
 
     /**
-     * Constructor for creating an User instance
+     * Constructor for creating an Users instance
      * @param id Id string of the user/account
      * @param created_at Date time of the user creation
-     * @param email User email that has been registered for this account, and also to be used as a login
+     * @param email Users email that has been registered for this account, and also to be used as a login
      */
-    public User(String id, LocalDate created_at, String email) {
+    public Users(Long id, LocalDate created_at, String email) {
         this.id = id;
         this.created_at = created_at;
         this.email = email;
@@ -27,16 +38,16 @@ public class User {
     /**
      * Constructor for DB to create a user with ID
      */
-    public User(LocalDate created_at, String email) {
+    public Users(LocalDate created_at, String email) {
         this.created_at = created_at;
         this.email = email;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -58,7 +69,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Users{" +
                 "id='" + id + '\'' +
                 ", created_at=" + created_at +
                 ", email='" + email + '\'' +
