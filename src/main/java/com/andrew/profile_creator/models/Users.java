@@ -2,6 +2,7 @@ package com.andrew.profile_creator.models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 public class Users {
@@ -18,6 +19,8 @@ public class Users {
     private Long id;
     private LocalDate created_at;
     private String email;
+    @Transient
+    private Integer memberDuration;
     //Password?
 
     public Users() {
@@ -65,6 +68,14 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getMemberDuration() {
+        return Period.between(this.created_at, LocalDate.now()).getYears();
+    }
+
+    public void setMemberDuration(Integer memberDuration) {
+        this.memberDuration = memberDuration;
     }
 
     @Override

@@ -19,18 +19,24 @@ public class UsersConfig {
         return args -> {
             Users john = new Users(
                     123L,
-                    LocalDate.of(2022, JULY, 20),
+                    LocalDate.of(2020, JANUARY, 20),
                     "john@springboot.com"
             );
 
             Users alex = new Users(
-                    123L,
-                    LocalDate.of(2022, MAY, 1),
+                    124L,
+                    LocalDate.of(2021, FEBRUARY, 1),
                     "alex@springboot.com"
             );
 
+            Users sam = new Users(
+                    125L,
+                    LocalDate.of(2000, JULY, 1),
+                    "sam@springboot.com"
+            );
+
             repository.saveAll(
-                    List.of(john, alex)
+                    List.of(john, alex, sam)
             );
         };
     }
