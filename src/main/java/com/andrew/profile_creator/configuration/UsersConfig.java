@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static com.andrew.profile_creator.models.RoleEnum.*;
 

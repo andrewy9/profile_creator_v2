@@ -6,9 +6,17 @@ import com.andrew.profile_creator.repository.RoleRepository;
 import com.andrew.profile_creator.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +24,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl {
+public class UserServiceImpl implements UserDetailsService {
+    private final static String USER_NOT_FOUND_MESSAGE = "user with email %s not found";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        AppUser appUser = userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, email)));
+
+        if(appUser == null) {
+            log.error("User not found in the database");
+            throw new UsernameNotFoundException("User not found in the database");
+        } else {
+            log.info("User found in the database");
+        }
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        appUser.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new User(
+                appUser.getEmail(),
+                appUser.getPassword(),
+                authorities
+        );
+    }
 
     public List<AppUser> getUsers() {
             return userRepository.findAll();
@@ -31,6 +64,7 @@ public class UserServiceImpl {
         if(userOptional.isPresent()) {
             throw new IllegalStateException("email taken");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -77,4 +111,5 @@ public class UserServiceImpl {
     public int enableAppUser(String email) {
         return userRepository.enableAppUser(email);
     }
+
 }

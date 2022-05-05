@@ -13,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/")
+@RequestMapping(path = "api/v1")
 @RequiredArgsConstructor
 public class UsersController {
     private final UserServiceImpl userServiceImpl;
