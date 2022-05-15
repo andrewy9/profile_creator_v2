@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.andrew.profile_creator.models.RoleEnum.*;
+import static com.andrew.profile_creator.repository.roles.RoleTypes.*;
 
 @Configuration
 public class UsersConfig {
@@ -18,15 +18,13 @@ public class UsersConfig {
     @Bean
     CommandLineRunner commandLineRunner(UserServiceImpl userService) {
         return args -> {
-            userService.addRole(new Role(null, ROLE_USER.name()));
-            userService.addRole(new Role(null, ROLE_MANAGER.name()));
-            userService.addRole(new Role(null, ROLE_ADMIN.name()));
-            userService.addRole(new Role(null, ROLE_SUPER_ADMIN.name()));
+            userService.addRole(new Role(null, USER.name()));
+            userService.addRole(new Role(null, ADMIN.name()));
 
-            userService.addNewUser(new AppUser(
+            userService.addUser(new AppUser(
                     null,
                     "jonny.depp@gmail.com",
-                    "John Travolta",
+                    "John Depp",
                     "1234",
                     LocalDateTime.now(),
                     new ArrayList<>(),
@@ -35,7 +33,7 @@ public class UsersConfig {
             ));
 
 
-            userService.addNewUser(new AppUser(
+            userService.addUser(new AppUser(
                     null,
                     "james.bond@gmail.com",
                     "James Bond",
@@ -46,7 +44,7 @@ public class UsersConfig {
                     false
             ));
 
-            userService.addNewUser(new AppUser(
+            userService.addUser(new AppUser(
                     null,
                     "jill.kill@gmail.com",
                     "Jill Kill",
@@ -56,7 +54,7 @@ public class UsersConfig {
                     false,
                     false
             ));
-            userService.addNewUser(new AppUser(
+            userService.addUser(new AppUser(
                     null,
                     "jane.dane@gmail.com",
                     "Jane Dane",
@@ -67,13 +65,9 @@ public class UsersConfig {
                     false
             ));
 
-            userService.addRoleToUser("jonny.depp@gmail.com", ROLE_USER.name());
-            userService.addRoleToUser("jonny.depp@gmail.com", ROLE_MANAGER.name());
-            userService.addRoleToUser("james.bond@gmail.com", ROLE_MANAGER.name());
-            userService.addRoleToUser("jill.kill@gmail.com", ROLE_ADMIN.name());
-            userService.addRoleToUser("jill.kill@gmail.com", ROLE_ADMIN.name());
-            userService.addRoleToUser("jill.kill@gmail.com", ROLE_ADMIN.name());
-            userService.addRoleToUser("jill.kill@gmail.com", ROLE_SUPER_ADMIN.name());
+            userService.addRoleToUser("jonny.depp@gmail.com", USER.name());
+            userService.addRoleToUser("james.bond@gmail.com", USER.name());
+            userService.addRoleToUser("jill.kill@gmail.com", ADMIN.name());
 
         };
     }

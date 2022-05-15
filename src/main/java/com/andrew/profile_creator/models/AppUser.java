@@ -3,7 +3,6 @@ package com.andrew.profile_creator.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,13 +35,4 @@ public class AppUser {
     private Collection<Role> roles = new ArrayList<>();
     private Boolean locked = false;
     private Boolean enabled = false;
-
-    @Override
-    public String toString() {
-        return "AppUser{" +
-                "id='" + id + '\'' +
-                ", created_at=" + created_at +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }
