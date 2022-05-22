@@ -1,36 +1,36 @@
 package com.andrew.profile_creator.repository.roles;
 
-import com.andrew.profile_creator.models.Role;
 import com.google.common.collect.Sets;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.andrew.profile_creator.repository.roles.UserPermission.*;
 
 public enum RoleTypes {
-    USER(Sets.newHashSet(
+    USER(1L, Sets.newHashSet(
             USER_READ,
             USER_WRITE
     )),
-    ADMIN(Sets.newHashSet(
+    ADMIN(2L, Sets.newHashSet(
             USER_READ,
             USER_WRITE,
             USERS_READ
     ));
 
     private final Set<UserPermission> permissions;
+    private final Long id;
 
-    RoleTypes(Set<UserPermission> permissions) {
+    RoleTypes( Long id, Set<UserPermission> permissions) {
+        this.id = id;
         this.permissions = permissions;
     }
 
     public Set<UserPermission> getPermissions() {
         return permissions;
     }
+    public Long getId() {return id;}
 
     public Set<SimpleGrantedAuthority>  getGrantedAuthorities() {
        Set<SimpleGrantedAuthority> permissions =  getPermissions().stream().map(permission ->

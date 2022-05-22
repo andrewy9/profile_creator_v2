@@ -1,7 +1,9 @@
 package com.andrew.profile_creator.services;
 
+import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;
+import com.andrew.profile_creator.util.Identifier;
 
 import java.util.List;
 
@@ -11,7 +13,9 @@ public interface UserService {
 
     Role addRole(Role role);
 
-    void addRoleToUser(String email, String roleName);
+    void addRoleToUser(String email, String roleName) throws RoleTypeNotFoundException;
+
+    void removeRoleFromUser(String email, String roleName);
 
     List<AppUser> getUsers();
 
@@ -19,7 +23,7 @@ public interface UserService {
 
     AppUser getUserById (Long id);
 
-    void updateUser(Long userId, String email);
+    void updateUser(Identifier identifier, AppUser appUser);
 
     void deleteUser(Long userId);
 
