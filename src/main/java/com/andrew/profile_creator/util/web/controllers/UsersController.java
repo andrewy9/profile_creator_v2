@@ -1,8 +1,9 @@
-package com.andrew.profile_creator.web.controllers;
+package com.andrew.profile_creator.util.web.controllers;
 
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.RoleToUserForm;
+import com.andrew.profile_creator.services.AuthenticateUserIdService;
 import com.andrew.profile_creator.services.UserService;
 import com.andrew.profile_creator.util.Identifier;
 import com.sun.istack.NotNull;
@@ -24,15 +25,17 @@ class UsersController {
 
     private final UserService userService;
 
+    private final AuthenticateUserIdService authenticateUserIdService;
+
     @GetMapping(path = "/users")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PreAuthorize("hasAuthority('users:read')")
+    @PreAuthorize("hasAuthority('users:read')") // or @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AppUser>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @GetMapping(path = "/user")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
+    @PreAuthorize("@authenticateUserIdService.hasId(#userId)")
     public ResponseEntity<AppUser> getUserByEmail(
             @NotNull @RequestParam(required = false) String userEmail,
             @NotNull @RequestParam(required = false) Long userId
