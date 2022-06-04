@@ -21,9 +21,9 @@ public interface UserService {
 
     AppUser getUserByEmail (String email);
 
-    AppUser getUserById (Long id);
+    AppUser getUserById (Long userId);
 
-    void updateUser(Identifier identifier, AppUser appUser);
+    void updateUser(Long userId, AppUser appUser);
 
     void deleteUser(Long userId);
 

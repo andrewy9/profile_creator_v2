@@ -95,27 +95,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Identifier identifier, AppUser appUser) {
+    public void updateUser(Long userId, AppUser appUserToBe) {
 
-        AppUser user;
-        if(identifier.userId().isPresent()) {
-            Long userId = identifier.userId().get();
-            user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "user with id " + userId + "does not exist"
-                    ));
-        } else {
-            String userEmail = identifier.userEmail().get();
-            user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "user with email " +  userEmail + "does not exist"
-                    ));
-        }
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "user with id " + userId + "does not exist"
+                ));
 
         //TODO: Create Request/Response DTO with Mapper
-        String email = appUser.getEmail();
-        String name = appUser.getName();
-        String password = appUser.getPassword();
+        String email = appUserToBe.getEmail();
+        String name = appUserToBe.getName();
+        String password = appUserToBe.getPassword();
         if (email != null && email.length() > 0)  {
             Optional<AppUser> userOptional = userRepository
                     .findByEmail(email);

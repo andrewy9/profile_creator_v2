@@ -6,21 +6,24 @@ import com.andrew.profile_creator.models.RoleToUserForm;
 import com.andrew.profile_creator.services.AuthenticateUserIdService;
 import com.andrew.profile_creator.services.UserService;
 import com.andrew.profile_creator.util.Identifier;
-import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("ClassCanBeRecord")
+@Validated
 @RestController
-@RequestMapping(path = "api/v1")
 @RequiredArgsConstructor
+@RequestMapping(path = "api/v1")
+@SuppressWarnings("ClassCanBeRecord")
 class UsersController {
 
     private final UserService userService;
@@ -34,22 +37,24 @@ class UsersController {
     }
 
     @GetMapping(path = "/user")
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
-    @PreAuthorize("@authenticateUserIdService.hasId(#userId)")
-    public ResponseEntity<AppUser> getUserByEmail(
-            @NotNull @RequestParam(required = false) String userEmail,
-            @NotNull @RequestParam(required = false) Long userId
+    @PreAuthorize(
+            "hasRole('ROLE_ADMIN') or " +
+            "authentication.principal.equals(#userEmail) or " +
+            "@authenticateUserIdService.hasId(#userId)"
+    )
+    public ResponseEntity<AppUser> getUser(
+            @RequestParam(required = false) String userEmail,
+            @RequestParam(required = false) Long userId
     ) throws Exception {
 
-        if (userEmail == null || userEmail.isBlank()) {
-           if(userId == null) {
-               throw new Exception("both email or userId cannot be empty");
-           }
-            return ResponseEntity.ok().body(userService.getUserById(userId));
+        // Throw exception if both or neither of the parameters are null
+        if (((userEmail == null || userEmail.isBlank()) && userId == null)
+                        || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
+            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
         }
 
         if (userId != null) {
-            throw new Exception("both email or userId cannot have values");
+            return ResponseEntity.ok().body(userService.getUserById(userId));
         }
 
         return ResponseEntity.ok().body(userService.getUserByEmail(userEmail));
@@ -65,23 +70,22 @@ class UsersController {
     @PutMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
     public ResponseEntity<?> updateUserById(@RequestParam(required = false) Long userId,
-                               @RequestParam(required = false) String userEmail,
-                               @RequestBody AppUser appUser) throws Exception {
+                                            @RequestParam(required = false) String userEmail,
+                                            @RequestBody AppUser appUser) throws Exception {
 
-        Identifier identifier;
-        if (userEmail == null || userEmail.isBlank()) {
-            if(userId == null) {
-                throw new Exception("both email or userId cannot be empty");
-            }
-            Optional<Long> userIdOptional = Optional.ofNullable(userId);
-            identifier = new Identifier(userIdOptional, null);
-        } else {
-            if (userId != null) {
-                throw new Exception("both email or userId cannot have values");
-            }
-            Optional<String> userEmailOptional = Optional.ofNullable(userEmail);
-            identifier = new Identifier(null, userEmailOptional);
+        if (((userEmail == null || userEmail.isBlank()) && userId == null)
+                || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
+            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
         }
+
+        if (userId != null) {
+            userService.updateUser(userId, appUser);
+            return ResponseEntity.ok().build();
+        }
+
+        userService.updateUser(
+            userService.getUserByEmail(userEmail).getId(), appUser
+        );
         return ResponseEntity.ok().build();
     }
 
@@ -100,3 +104,4 @@ class UsersController {
 
 
 }
+
