@@ -1,5 +1,6 @@
 package com.andrew.profile_creator.services;
 
+import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;

@@ -1,5 +1,6 @@
 package com.andrew.profile_creator.services;
 
+import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.exception.RoleExistsInUserAssignedRoles;
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
@@ -7,7 +8,6 @@ import com.andrew.profile_creator.models.Role;
 import com.andrew.profile_creator.repository.RoleRepository;
 import com.andrew.profile_creator.repository.UserRepository;
 import com.andrew.profile_creator.repository.roles.RoleTypes;
-import com.andrew.profile_creator.util.Identifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
