@@ -1,4 +1,4 @@
-package com.andrew.profile_creator.util;
+package com.andrew.profile_creator.utills;
 
 import java.util.Optional;
 

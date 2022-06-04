@@ -1,8 +1,6 @@
 package com.andrew.profile_creator.services;
 
-import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.exception.RoleExistsInUserAssignedRoles;
-import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;
 import com.andrew.profile_creator.repository.RoleRepository;
@@ -20,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+
+import static com.andrew.profile_creator.utills.UserUtils.roleTypeCheck;
 
 @SuppressWarnings("ClassCanBeRecord")
 @Service
@@ -95,27 +95,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Long userId, AppUser appUserToBe) {
+    public AppUser updateUser(Long userId, AppUser appUserToBe) {
 
-        AppUser user = userRepository.findById(userId)
+        AppUser appUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException(
                         "user with id " + userId + "does not exist"
                 ));
 
-        //TODO: Create Request/Response DTO with Mapper
         String email = appUserToBe.getEmail();
+        Optional<AppUser> userOptional = userRepository.findByEmail(email);
+        if(userOptional.isPresent()) {
+            throw new IllegalStateException("email taken");
+        }
         String name = appUserToBe.getName();
         String password = appUserToBe.getPassword();
-        if (email != null && email.length() > 0)  {
-            Optional<AppUser> userOptional = userRepository
-                    .findByEmail(email);
-            if(userOptional.isPresent()) {
-                throw new IllegalStateException("email taken");
-            }
-            user.setEmail(email);
-            user.setName(name);
-            user.setPassword(password);
-        }
+        Collection<Role> roles = appUserToBe.getRoles();
+
+        appUser.setEmail(email);
+        appUser.setName(name);
+        appUser.setPassword(password);
+        appUser.setRoles(roles);
+
+        return appUser;
     }
 
     @Override
@@ -125,20 +126,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String email, String roleName) throws RoleTypeNotFoundException{
+    public AppUser addRoleToUser(Long userId, String roleName) throws Exception {
 
-        log.info("Adding a role {} to user {}", roleName, email);
-        AppUser appUser = userRepository.findByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, email)));
+        log.info("Adding a role {} to userId {}", roleName, userId);
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId)));
 
-        RoleTypes role = Arrays.stream(RoleTypes.values()).filter(roleTypes ->
-                roleTypes.name().equals(roleName))
-                .findAny()
-                .orElseThrow(() -> new RoleTypeNotFoundException("ROLE NOT FOUND", roleName));
+        RoleTypes newRole = roleTypeCheck(roleName);
 
+        if (appUser.getRoles().stream().anyMatch(
+                role -> role.getName() == roleName)) {
+            throw new Exception(roleName + "already exists in user" + appUser.getEmail());
+        }
 
+        appUser.getRoles().add(new Role(newRole.getId(), newRole.name()));
 
-        appUser.getRoles().add(new Role( role.getId(), role.name()));
+        return appUser;
     }
 
     @Override

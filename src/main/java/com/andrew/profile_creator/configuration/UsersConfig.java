@@ -70,9 +70,9 @@ public class UsersConfig {
                     false
             ));
 
-            userService.addRoleToUser("jonny.depp@gmail.com", USER.name());
-            userService.addRoleToUser("james.bond@gmail.com", USER.name());
-            userService.addRoleToUser("jill.kill@gmail.com", ADMIN.name());
+            userService.addRoleToUser(1L, USER.name());
+            userService.addRoleToUser(2L, USER.name());
+            userService.addRoleToUser(3L, ADMIN.name());
 
         };
     }

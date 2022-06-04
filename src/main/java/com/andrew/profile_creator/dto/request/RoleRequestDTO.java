@@ -1,9 +1,9 @@
-package com.andrew.profile_creator.models;
+package com.andrew.profile_creator.dto.request;
 
 import lombok.Data;
 
 @Data
-public class RoleToUserForm {
+public class RoleRequestDTO {
     private String username;
     private String roleName;
 }

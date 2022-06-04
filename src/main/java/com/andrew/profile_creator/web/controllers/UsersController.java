@@ -4,10 +4,8 @@ import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.dto.response.AppUserResponseDTO;
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.models.RoleToUserForm;
 import com.andrew.profile_creator.services.AuthenticateUserIdService;
 import com.andrew.profile_creator.services.UserService;
-import com.andrew.profile_creator.util.Identifier;
 import com.andrew.profile_creator.web.mappers.AppUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Validated
@@ -77,7 +72,7 @@ class UsersController {
 
     @PostMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<AppUserResponseDTO> saveAppUser(@RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws RoleTypeNotFoundException {
+    public ResponseEntity<AppUserResponseDTO> saveAppUser( AppUserWriteRequestDTO appUserRequestDTO) throws RoleTypeNotFoundException {
 
         AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
         userService.addUser(appUser);
@@ -90,9 +85,34 @@ class UsersController {
 
     @PutMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
-    public ResponseEntity<?> updateUserById(@RequestParam(required = false) Long userId,
-                                            @RequestParam(required = false) String userEmail,
-                                            @RequestBody AppUser appUser) throws Exception {
+    public ResponseEntity<AppUserResponseDTO> updateUser(@RequestParam(required = false) Long userId,
+                                        @RequestParam(required = false) String userEmail,
+                                        @RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws Exception {
+
+        if (((userEmail == null || userEmail.isBlank()) && userId == null)
+                || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
+            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
+        }
+
+        AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
+
+        AppUser updatedUser;
+        if (userId != null) {
+            updatedUser = userService.updateUser(userId, appUser);
+        } else {
+            Long newUserId = userService.getUserByEmail(userEmail).getId();
+            updatedUser = userService.updateUser(newUserId, appUser);
+        }
+
+        AppUserResponseDTO appUserResponseDTO= appUserMapper.toResponseDto(updatedUser);
+        return ResponseEntity.ok().body(appUserResponseDTO);
+    }
+
+    @PostMapping(path = "/role/addToUser")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> addRoleToUser(@RequestParam(required = false) Long userId,
+                                           @RequestParam(required = false) String userEmail,
+                                           @RequestBody String roleName) throws Exception {
 
         if (((userEmail == null || userEmail.isBlank()) && userId == null)
                 || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
@@ -100,20 +120,13 @@ class UsersController {
         }
 
         if (userId != null) {
-            userService.updateUser(userId, appUser);
+            userService.addRoleToUser(userId, roleName);
             return ResponseEntity.ok().build();
         }
 
-        userService.updateUser(
-            userService.getUserByEmail(userEmail).getId(), appUser
-        );
-        return ResponseEntity.ok().build();
-    }
+        Long findById = userService.getUserByEmail(userEmail).getId();
+        userService.addRoleToUser(findById,roleName);
 
-    @PostMapping(path = "/role/addToUser")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) throws RoleTypeNotFoundException {
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
     }
 
@@ -122,7 +135,6 @@ class UsersController {
     public void deleteUserById(@RequestParam("userId") Long id) {
         userService.deleteUser(id);
     }
-
 
 }
 

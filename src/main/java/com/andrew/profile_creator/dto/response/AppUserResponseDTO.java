@@ -12,9 +12,10 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 public class AppUserResponseDTO {
+    private Long userId;
     private String email;
     private String name;
     private LocalDateTime created_at;
-//    private Collection<String> roles;
-    private  Collection<Role> roles;
+    private Collection<String> roles;
+
 }

@@ -1,10 +1,7 @@
 package com.andrew.profile_creator.services;
 
-import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
-import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;
-import com.andrew.profile_creator.util.Identifier;
 
 import java.util.List;
 
@@ -14,7 +11,7 @@ public interface UserService {
 
     Role addRole(Role role);
 
-    void addRoleToUser(String email, String roleName) throws RoleTypeNotFoundException;
+    AppUser addRoleToUser(Long userId, String roleName) throws Exception;
 
     void removeRoleFromUser(String email, String roleName);
 
@@ -24,7 +21,7 @@ public interface UserService {
 
     AppUser getUserById (Long userId);
 
-    void updateUser(Long userId, AppUser appUser);
+    AppUser updateUser(Long userId, AppUser appUser);
 
     void deleteUser(Long userId);
 
