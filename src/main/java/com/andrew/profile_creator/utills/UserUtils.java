@@ -13,4 +13,11 @@ public class UserUtils {
                 .findAny()
                 .orElseThrow(() -> new RoleTypeNotFoundException("ROLE NOT FOUND", roleName));
     }
+
+    public static void oneOfIdOrEmailIsProvidedOrThrowException(Long userId, String userEmail) throws Exception {
+        if (((userEmail == null || userEmail.isBlank()) && userId == null)
+                || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
+            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
+        }
+    }
 }

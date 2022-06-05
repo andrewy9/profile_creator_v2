@@ -3,6 +3,7 @@ package com.andrew.profile_creator.repository.roles;
 public enum UserPermission {
     USER_READ("user:read"),
     USER_WRITE("user:write"),
+    USER_DELETE("user:delete"),
     USERS_READ("users:read");
 
     private final String permission;

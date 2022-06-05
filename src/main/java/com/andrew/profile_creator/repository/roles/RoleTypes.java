@@ -16,6 +16,7 @@ public enum RoleTypes {
     ADMIN(2L, Sets.newHashSet(
             USER_READ,
             USER_WRITE,
+            USER_DELETE,
             USERS_READ
     ));
 
@@ -43,8 +44,7 @@ public enum RoleTypes {
     }
 
     public Set<String>  getGrantedAuthoritiesStr() {
-        Set<String> permissions =  getPermissions().stream().map(permission ->
-                        permission.getPermission())
+        Set<String> permissions =  getPermissions().stream().map(UserPermission::getPermission)
                 .collect(Collectors.toSet());
 
         permissions.add("ROLE_" + this.name());

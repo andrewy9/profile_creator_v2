@@ -15,16 +15,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.andrew.profile_creator.utills.UserUtils.oneOfIdOrEmailIsProvidedOrThrowException;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "api/v1")
-@SuppressWarnings("ClassCanBeRecord")
 class UsersController {
 
     @Autowired
@@ -55,11 +57,7 @@ class UsersController {
             @RequestParam(required = false) Long userId
     ) throws Exception {
 
-        // Throw exception if both or neither of the parameters are null
-        if (((userEmail == null || userEmail.isBlank()) && userId == null)
-                        || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
-            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
-        }
+        oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
 
         if (userId != null) {
             AppUserResponseDTO appUser = appUserMapper.toResponseDto(userService.getUserById(userId));
@@ -72,10 +70,9 @@ class UsersController {
 
     @PostMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<AppUserResponseDTO> saveAppUser( AppUserWriteRequestDTO appUserRequestDTO) throws RoleTypeNotFoundException {
+    public ResponseEntity<AppUserResponseDTO> saveAppUser(@Valid @RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws RoleTypeNotFoundException {
 
-        AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
-        userService.addUser(appUser);
+        AppUser appUser = userService.addUser(appUserMapper.toEntity(appUserRequestDTO));
 
         AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(appUser);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user").toUriString());
@@ -86,13 +83,10 @@ class UsersController {
     @PutMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.principal.equals(#userEmail)")
     public ResponseEntity<AppUserResponseDTO> updateUser(@RequestParam(required = false) Long userId,
-                                        @RequestParam(required = false) String userEmail,
-                                        @RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws Exception {
+                                                         @RequestParam(required = false) String userEmail,
+                                                         @Valid @RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws Exception {
 
-        if (((userEmail == null || userEmail.isBlank()) && userId == null)
-                || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
-            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
-        }
+        oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
 
         AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
 
@@ -104,37 +98,63 @@ class UsersController {
             updatedUser = userService.updateUser(newUserId, appUser);
         }
 
-        AppUserResponseDTO appUserResponseDTO= appUserMapper.toResponseDto(updatedUser);
+        AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
         return ResponseEntity.ok().body(appUserResponseDTO);
     }
 
-    @PostMapping(path = "/role/addToUser")
+    @PutMapping(path = "/user/addRole")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> addRoleToUser(@RequestParam(required = false) Long userId,
-                                           @RequestParam(required = false) String userEmail,
-                                           @RequestBody String roleName) throws Exception {
+    public ResponseEntity<AppUserResponseDTO> addRoleToUser(@RequestParam(required = false) Long userId,
+                                                            @RequestParam(required = false) String userEmail,
+                                                            @RequestParam String roleName) throws Exception {
 
-        if (((userEmail == null || userEmail.isBlank()) && userId == null)
-                || (userEmail !=null && !userEmail.isBlank() && userId != null)) {
-            throw new Exception("must provide one of the two possible parameters: userEmail or userId");
-        }
+        oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
 
+        AppUser updatedUser;
         if (userId != null) {
-            userService.addRoleToUser(userId, roleName);
-            return ResponseEntity.ok().build();
+            updatedUser = userService.addRoleToUser(userId, roleName);
+        } else {
+            Long findById = userService.getUserByEmail(userEmail).getId();
+            updatedUser = userService.addRoleToUser(findById,roleName);
         }
 
-        Long findById = userService.getUserByEmail(userEmail).getId();
-        userService.addRoleToUser(findById,roleName);
-
-        return ResponseEntity.ok().build();
+        AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
+        return ResponseEntity.ok().body(appUserResponseDTO);
     }
 
-    @DeleteMapping(path = "/by_id")
+    @PutMapping(path = "/user/removeRole")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteUserById(@RequestParam("userId") Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<AppUserResponseDTO> removeRoleFromUser(@RequestParam(required = false) Long userId,
+                                                                 @RequestParam(required = false) String userEmail,
+                                                                 @RequestParam String roleName) throws Exception {
+
+        oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
+
+        AppUser updatedUser;
+        if (userId != null) {
+            updatedUser = userService.removeRoleFromUser(userId, roleName);
+        } else {
+            Long findById = userService.getUserByEmail(userEmail).getId();
+            updatedUser = userService.removeRoleFromUser(findById,roleName);
+        }
+
+        AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
+        return ResponseEntity.ok().body(appUserResponseDTO);
+    }
+
+    @DeleteMapping(path = "/user/deleteUser")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteUserById(@RequestParam(required = false) Long userId,
+                               @RequestParam(required = false) String userEmail) throws Exception {
+
+        oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
+
+        if (userId != null) {
+            userService.deleteUser(userId);
+        } else {
+            Long findById = userService.getUserByEmail(userEmail).getId();
+            userService.deleteUser(findById);
+        }
     }
 
 }
-

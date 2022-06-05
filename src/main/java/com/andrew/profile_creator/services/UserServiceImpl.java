@@ -1,6 +1,5 @@
 package com.andrew.profile_creator.services;
 
-import com.andrew.profile_creator.exception.RoleExistsInUserAssignedRoles;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;
 import com.andrew.profile_creator.repository.RoleRepository;
@@ -48,9 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         appUser.getRoles().forEach(role -> {
-            RoleTypes.valueOf(role.getName()).getGrantedAuthoritiesStr().forEach(perm -> {
-                authorities.add(new SimpleGrantedAuthority(perm));
-            });
+            RoleTypes.valueOf(role.getName())
+                    .getGrantedAuthoritiesStr()
+                    .forEach(perm -> authorities.add(new SimpleGrantedAuthority(perm)));
 //            authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
         return new User(
@@ -68,7 +67,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public AppUser getUserById(Long userId) {
         Optional<AppUser> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             throw new IllegalStateException("user does not exist");
         }
         return userOptional.get();
@@ -77,7 +76,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public AppUser getUserByEmail(String email){
         Optional<AppUser> userOptional = userRepository.findByEmail(email);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             throw new IllegalStateException("user does not exist");
         }
         return userOptional.get();
@@ -135,8 +134,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         RoleTypes newRole = roleTypeCheck(roleName);
 
         if (appUser.getRoles().stream().anyMatch(
-                role -> role.getName() == roleName)) {
-            throw new Exception(roleName + "already exists in user" + appUser.getEmail());
+                role -> role.getName().equals(roleName))) {
+            throw new Exception("the role " + roleName + " already exists in user: " + appUser.getEmail());
         }
 
         appUser.getRoles().add(new Role(newRole.getId(), newRole.name()));
@@ -145,16 +144,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void removeRoleFromUser(String email, String roleName) {
-//        log.info("Removing a role {} to user {}", roleName, email);
-//        Optional<AppUser> user = userRepository.findByEmail(email);
-//
-//        RoleTypes role = Arrays.stream(RoleTypes.values()).filter(roleTypes ->
-//                        roleTypes.name().equals(roleName))
-//                .findAny()
-//                .orElseThrow(() -> new RuntimeException("ROLE NOT FOUND"));
-//
-//        user.ifPresent(appUser -> appUser.getRoles().remove(role));
+    public AppUser removeRoleFromUser(Long userId, String roleName) throws Exception {
+        log.info("Removing a role {} to user {}", roleName, userId);
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId)));
+
+        RoleTypes removingRole = roleTypeCheck(roleName);
+
+        if (appUser.getRoles().stream().noneMatch(
+                role -> role.getName().equals(roleName))) {
+            throw new Exception("the role " + roleName + " does not exist in user: " + appUser.getEmail());
+        }
+
+        appUser.getRoles().remove(new Role(removingRole.getId(), removingRole.name()));
+
+        return appUser;
     }
 
     @Override
@@ -170,12 +174,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Integer enableAppUser(String email) {
         return userRepository.enableAppUser(email);
-    }
-
-    private void roleIsUniqueInUserAssignedRolesOrThrowException(AppUser appUser, Role role) throws RoleExistsInUserAssignedRoles {
-        if (appUser.getRoles().contains(role)){
-            throw new RoleExistsInUserAssignedRoles("Role %s is already assigned to the user %s", appUser.getEmail(), role.getName());
-        }
     }
 
 }

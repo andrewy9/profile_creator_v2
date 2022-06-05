@@ -13,7 +13,7 @@ public interface UserService {
 
     AppUser addRoleToUser(Long userId, String roleName) throws Exception;
 
-    void removeRoleFromUser(String email, String roleName);
+    AppUser removeRoleFromUser(Long userId, String roleName) throws Exception;
 
     List<AppUser> getUsers();
 

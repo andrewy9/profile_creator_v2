@@ -1,6 +1,5 @@
 package com.andrew.profile_creator.dto.response;
 
-import com.andrew.profile_creator.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
