@@ -28,8 +28,10 @@ public class AppUserMapper {
                 .stream()
                 .map(Role::getName)
                 .collect(Collectors.toList());
+        Boolean locked = appUser.getLocked();
+        Boolean enabled = appUser.getEnabled();
 
-        return new AppUserResponseDTO(userId, email, name, createdAt, roles);
+        return new AppUserResponseDTO(userId, email, name, createdAt, roles, locked, enabled);
     }
 
     public AppUser toEntity(AppUserWriteRequestDTO appUserDTO) {
