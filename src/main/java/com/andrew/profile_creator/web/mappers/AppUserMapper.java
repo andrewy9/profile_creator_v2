@@ -5,19 +5,17 @@ import com.andrew.profile_creator.dto.response.AppUserResponseDTO;
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
 import com.andrew.profile_creator.models.Role;
-import com.andrew.profile_creator.repository.roles.RoleTypes;
+import com.andrew.profile_creator.security.authorization.RoleTypes;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.andrew.profile_creator.utills.UserUtils.roleTypeCheck;
 
 @Component
-@SuppressWarnings("ClassCanBeRecord")
 public class AppUserMapper {
 
     public AppUserResponseDTO toResponseDto(AppUser appUser) {
@@ -34,7 +32,7 @@ public class AppUserMapper {
         return new AppUserResponseDTO(userId, email, name, createdAt, roles);
     }
 
-    public AppUser toEntity(AppUserWriteRequestDTO appUserDTO) throws  RoleTypeNotFoundException{
+    public AppUser toEntity(AppUserWriteRequestDTO appUserDTO) {
         AppUser appUser =  new AppUser(
                 null,
                 appUserDTO.getEmail(),
@@ -45,7 +43,7 @@ public class AppUserMapper {
                 false,
                 false);
 
-        appUserDTO.getRoles().stream().forEach(roleName -> {
+        appUserDTO.getRoles().forEach(roleName -> {
             try {
                 RoleTypes role = roleTypeCheck(roleName);
                 appUser.getRoles().add(new Role(role.getId(), role.name()));

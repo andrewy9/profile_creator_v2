@@ -15,9 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.andrew.profile_creator.repository.roles.UserPermission.USERS_READ;
-import static com.andrew.profile_creator.repository.roles.UserPermission.USER_READ;
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -39,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/", "/api/v1/login/**").permitAll();
+        http.authorizeRequests().antMatchers("/", "/api/v1/login/**", "/api/v1/registration/**").permitAll();
 //        http.authorizeRequests().antMatchers(GET,"/api/v1/user/**").hasAnyAuthority(USER_READ.getPermission());
 //        http.authorizeRequests().antMatchers(GET,"/api/v1/users/**").hasAnyAuthority(USERS_READ.getPermission());
 //        http.authorizeRequests().antMatchers(GET,"/api/v1/role/**").hasAnyAuthority(USER_READ.getPermission());

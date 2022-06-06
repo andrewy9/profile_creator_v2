@@ -2,10 +2,9 @@ package com.andrew.profile_creator.web.controllers;
 
 import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.dto.response.AppUserResponseDTO;
-import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
 import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.services.AuthenticateUserIdService;
-import com.andrew.profile_creator.services.UserService;
+import com.andrew.profile_creator.services.user.AppUserService;
+import com.andrew.profile_creator.services.user.AuthenticateUserIdService;
 import com.andrew.profile_creator.web.mappers.AppUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +32,12 @@ class UsersController {
     private AppUserMapper appUserMapper;
 
     private final AuthenticateUserIdService authenticateUserIdService;
-    private final UserService userService;
+    private final AppUserService appUserService;
 
     @GetMapping(path = "/users")
     @PreAuthorize("hasAuthority('users:read')") // or @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Collection<AppUserResponseDTO>> getUsers() {
-        List<AppUserResponseDTO> appUserList =  userService.getUsers()
+        List<AppUserResponseDTO> appUserList =  appUserService.getAppUsers()
                 .stream()
                 .map(appUserMapper::toResponseDto)
                 .collect(Collectors.toList());
@@ -60,19 +59,19 @@ class UsersController {
         oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
 
         if (userId != null) {
-            AppUserResponseDTO appUser = appUserMapper.toResponseDto(userService.getUserById(userId));
+            AppUserResponseDTO appUser = appUserMapper.toResponseDto(appUserService.getUserById(userId));
             return ResponseEntity.ok().body(appUser);
         }
 
-        AppUserResponseDTO appUser = appUserMapper.toResponseDto(userService.getUserByEmail(userEmail));
+        AppUserResponseDTO appUser = appUserMapper.toResponseDto(appUserService.getUserByEmail(userEmail));
         return ResponseEntity.ok().body(appUser);
     }
 
     @PostMapping(path = "/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<AppUserResponseDTO> saveAppUser(@Valid @RequestBody AppUserWriteRequestDTO appUserRequestDTO) throws RoleTypeNotFoundException {
+    public ResponseEntity<AppUserResponseDTO> saveAppUser(@Valid @RequestBody AppUserWriteRequestDTO appUserRequestDTO) {
 
-        AppUser appUser = userService.addUser(appUserMapper.toEntity(appUserRequestDTO));
+        AppUser appUser = appUserService.saveAppUser(appUserMapper.toEntity(appUserRequestDTO));
 
         AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(appUser);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user").toUriString());
@@ -92,10 +91,10 @@ class UsersController {
 
         AppUser updatedUser;
         if (userId != null) {
-            updatedUser = userService.updateUser(userId, appUser);
+            updatedUser = appUserService.updateAppUser(userId, appUser);
         } else {
-            Long newUserId = userService.getUserByEmail(userEmail).getId();
-            updatedUser = userService.updateUser(newUserId, appUser);
+            Long newUserId = appUserService.getUserByEmail(userEmail).getId();
+            updatedUser = appUserService.updateAppUser(newUserId, appUser);
         }
 
         AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
@@ -112,10 +111,10 @@ class UsersController {
 
         AppUser updatedUser;
         if (userId != null) {
-            updatedUser = userService.addRoleToUser(userId, roleName);
+            updatedUser = appUserService.addRoleToUser(userId, roleName);
         } else {
-            Long findById = userService.getUserByEmail(userEmail).getId();
-            updatedUser = userService.addRoleToUser(findById,roleName);
+            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            updatedUser = appUserService.addRoleToUser(findById,roleName);
         }
 
         AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
@@ -132,10 +131,10 @@ class UsersController {
 
         AppUser updatedUser;
         if (userId != null) {
-            updatedUser = userService.removeRoleFromUser(userId, roleName);
+            updatedUser = appUserService.removeRoleFromUser(userId, roleName);
         } else {
-            Long findById = userService.getUserByEmail(userEmail).getId();
-            updatedUser = userService.removeRoleFromUser(findById,roleName);
+            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            updatedUser = appUserService.removeRoleFromUser(findById,roleName);
         }
 
         AppUserResponseDTO appUserResponseDTO = appUserMapper.toResponseDto(updatedUser);
@@ -150,10 +149,10 @@ class UsersController {
         oneOfIdOrEmailIsProvidedOrThrowException(userId, userEmail);
 
         if (userId != null) {
-            userService.deleteUser(userId);
+            appUserService.deleteUser(userId);
         } else {
-            Long findById = userService.getUserByEmail(userEmail).getId();
-            userService.deleteUser(findById);
+            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            appUserService.deleteUser(findById);
         }
     }
 

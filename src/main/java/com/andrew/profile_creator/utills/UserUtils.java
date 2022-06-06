@@ -1,7 +1,7 @@
 package com.andrew.profile_creator.utills;
 
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
-import com.andrew.profile_creator.repository.roles.RoleTypes;
+import com.andrew.profile_creator.security.authorization.RoleTypes;
 
 import java.util.Arrays;
 
