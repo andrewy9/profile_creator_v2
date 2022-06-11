@@ -1,11 +1,11 @@
-package com.andrew.profile_creator.models;
+package com.andrew.profile_creator.models.profiles;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -15,24 +15,19 @@ import static javax.persistence.FetchType.EAGER;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppUser {
+public class Profile {
     @Id
     @SequenceGenerator(
-            name = "users_sequence",
-            sequenceName = "users_sequence",
+            name = "profile_sequence",
+            sequenceName = "profile_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.AUTO,
-            generator = "users_sequence"
+            generator = "profile_sequence"
     )
     private Long id;
-    private String email;
-    private String name;
-    private String password;
-    private LocalDateTime created_at;
+    private String profileName;
     @ManyToMany(fetch = EAGER)
-    private Collection<Role> roles = new ArrayList<>();
-    private Boolean locked = false;
-    private Boolean enabled = false;
+    private Collection<Employment> employment = new ArrayList<>();
 }

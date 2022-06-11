@@ -1,8 +1,8 @@
-package com.andrew.profile_creator.services.user;
+package com.andrew.profile_creator.security;
 
 import com.andrew.profile_creator.exception.UserDoesNotExistException;
-import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.repository.UserRepository;
+import com.andrew.profile_creator.models.accounts.AppUser;
+import com.andrew.profile_creator.repository.accounts.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

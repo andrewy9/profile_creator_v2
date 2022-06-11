@@ -3,8 +3,8 @@ package com.andrew.profile_creator.web.mappers;
 import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.dto.response.AppUserResponseDTO;
 import com.andrew.profile_creator.exception.RoleTypeNotFoundException;
-import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.models.Role;
+import com.andrew.profile_creator.models.accounts.AppUser;
+import com.andrew.profile_creator.models.accounts.Role;
 import com.andrew.profile_creator.security.authorization.RoleTypes;
 import org.springframework.stereotype.Component;
 

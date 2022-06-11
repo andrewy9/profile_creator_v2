@@ -1,6 +1,6 @@
-package com.andrew.profile_creator.repository;
+package com.andrew.profile_creator.repository.accounts;
 
-import com.andrew.profile_creator.models.ConfirmationToken;
+import com.andrew.profile_creator.models.accounts.ConfirmationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

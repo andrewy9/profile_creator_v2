@@ -1,6 +1,6 @@
-package com.andrew.profile_creator.repository;
+package com.andrew.profile_creator.repository.accounts;
 
-import com.andrew.profile_creator.models.AppUser;
+import com.andrew.profile_creator.models.accounts.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,9 +1,9 @@
 package com.andrew.profile_creator.services.user;
 
-import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.models.Role;
-import com.andrew.profile_creator.repository.RoleRepository;
-import com.andrew.profile_creator.repository.UserRepository;
+import com.andrew.profile_creator.models.accounts.AppUser;
+import com.andrew.profile_creator.models.accounts.Role;
+import com.andrew.profile_creator.repository.accounts.RoleRepository;
+import com.andrew.profile_creator.repository.accounts.UserRepository;
 import com.andrew.profile_creator.security.authorization.RoleTypes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

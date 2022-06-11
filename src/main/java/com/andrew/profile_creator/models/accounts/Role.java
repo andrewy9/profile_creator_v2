@@ -1,4 +1,4 @@
-package com.andrew.profile_creator.models;
+package com.andrew.profile_creator.models.accounts;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

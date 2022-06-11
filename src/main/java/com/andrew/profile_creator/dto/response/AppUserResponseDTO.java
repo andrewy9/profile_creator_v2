@@ -16,6 +16,6 @@ public class AppUserResponseDTO {
     private String name;
     private LocalDateTime created_at;
     private Collection<String> roles;
-    private Boolean locked = false;
-    private Boolean enabled = false;
+    private Boolean locked;
+    private Boolean enabled;
 }

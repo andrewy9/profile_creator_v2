@@ -2,9 +2,9 @@ package com.andrew.profile_creator.web.controllers;
 
 import com.andrew.profile_creator.dto.request.AppUserWriteRequestDTO;
 import com.andrew.profile_creator.dto.response.AppUserResponseDTO;
-import com.andrew.profile_creator.models.AppUser;
+import com.andrew.profile_creator.models.accounts.AppUser;
 import com.andrew.profile_creator.services.user.AppUserService;
-import com.andrew.profile_creator.services.user.AuthenticateUserIdService;
+import com.andrew.profile_creator.security.AuthenticateUserIdService;
 import com.andrew.profile_creator.web.mappers.AppUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

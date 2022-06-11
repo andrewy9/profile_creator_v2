@@ -1,7 +1,7 @@
 package com.andrew.profile_creator.services.user;
 
-import com.andrew.profile_creator.models.AppUser;
-import com.andrew.profile_creator.models.Role;
+import com.andrew.profile_creator.models.accounts.AppUser;
+import com.andrew.profile_creator.models.accounts.Role;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.andrew.profile_creator.repository;
+package com.andrew.profile_creator.repository.accounts;
 
-import com.andrew.profile_creator.models.Role;
+import com.andrew.profile_creator.models.accounts.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
