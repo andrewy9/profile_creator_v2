@@ -11,7 +11,7 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 public class AppUserResponseDTO {
-    private Long userId;
+    private Long user_id;
     private String email;
     private String name;
     private LocalDateTime created_at;

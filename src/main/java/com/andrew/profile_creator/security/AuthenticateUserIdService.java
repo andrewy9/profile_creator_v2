@@ -29,6 +29,6 @@ public class AuthenticateUserIdService {
                 ()-> new UserDoesNotExistException("User not found", username)
         );
 
-        return appUser.getId().equals(userId);
+        return appUser.getUser_id().equals(userId);
     }
 }

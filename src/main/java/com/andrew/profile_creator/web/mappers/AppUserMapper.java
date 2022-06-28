@@ -19,9 +19,9 @@ import static com.andrew.profile_creator.utills.UserUtils.roleTypeCheck;
 public class AppUserMapper {
 
     public AppUserResponseDTO toResponseDto(AppUser appUser) {
-        Long userId = appUser.getId();
+        Long userId = appUser.getUser_id();
         String email = appUser.getEmail();
-        String name = appUser.getName();
+        String name = appUser.getFirst_name();
         LocalDateTime createdAt = appUser.getCreated_at();
         List<String> roles = appUser
                 .getRoles()
@@ -38,7 +38,8 @@ public class AppUserMapper {
         AppUser appUser =  new AppUser(
                 null,
                 appUserDTO.getEmail(),
-                appUserDTO.getName(),
+                appUserDTO.getFirst_name(),
+                appUserDTO.getLast_name(),
                 appUserDTO.getPassword(),
                 LocalDateTime.now(),
                 new ArrayList<>(),

@@ -28,7 +28,8 @@ public class UsersConfig {
             userService.saveAppUser(new AppUser(
                     null,
                     "jonny.depp@gmail.com",
-                    "John Depp",
+                    "Johny",
+                    "Depp",
                     "1234",
                     LocalDateTime.now(),
                     new ArrayList<>(),
@@ -38,7 +39,8 @@ public class UsersConfig {
             userService.saveAppUser(new AppUser(
                     null,
                     "james.bond@gmail.com",
-                    "James Bond",
+                    "James",
+                    "Depp",
                     "1234",
                     LocalDateTime.now(),
                     new ArrayList<>(),
@@ -48,7 +50,8 @@ public class UsersConfig {
             userService.saveAppUser(new AppUser(
                     null,
                     "jill.kill@gmail.com",
-                    "Jill Kill",
+                    "Jill",
+                    "Kill",
                     "1234",
                     LocalDateTime.now(),
                     new ArrayList<>(),
@@ -58,7 +61,8 @@ public class UsersConfig {
             userService.saveAppUser(new AppUser(
                     null,
                     "jane.dane@gmail.com",
-                    "Jane Dane",
+                    "Jane",
+                    "Dane",
                     "1234",
                     LocalDateTime.now(),
                     new ArrayList<>(),

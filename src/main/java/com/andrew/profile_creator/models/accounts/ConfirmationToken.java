@@ -20,30 +20,30 @@ public class ConfirmationToken {
             strategy = GenerationType.SEQUENCE,
             generator = "confirmation_token_sequence"
     )
-    private Long id;
+    private Long token_id;
 
     @Column(nullable = false)
     private String token;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private LocalDateTime expires_at;
 
-    private LocalDateTime confirmedAt;
+    private LocalDateTime confirmed_at;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, name = "app_user_id")
     private AppUser appUser;
 
     public ConfirmationToken(String token,
-                             LocalDateTime createdAt,
-                             LocalDateTime expiresAt,
+                             LocalDateTime created_at,
+                             LocalDateTime expires_at,
                              AppUser appUser) {
         this.token = token;
-        this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
+        this.created_at = created_at;
+        this.expires_at = expires_at;
         this.appUser = appUser;
     }
 }

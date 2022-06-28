@@ -9,8 +9,9 @@ import java.util.Collection;
 public class AppUserWriteRequestDTO {
     @NotBlank
     private String email;
+    private String first_name;
     @NotBlank
-    private String name;
+    private String last_name;
     // Implement @NotBlank in the frontEnd
     private String password;
     // Implement @NotBlank in the frontEnd

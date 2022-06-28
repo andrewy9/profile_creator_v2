@@ -106,12 +106,12 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         if(userOptional.isPresent()) {
             throw new IllegalStateException("email taken");
         }
-        String name = appUserToBe.getName();
+        String name = appUserToBe.getFirst_name();
         String password = appUserToBe.getPassword();
         Collection<Role> roles = appUserToBe.getRoles();
 
         appUser.setEmail(email);
-        appUser.setName(name);
+        appUser.setFirst_name(name);
         appUser.setPassword(password);
         appUser.setRoles(roles);
 

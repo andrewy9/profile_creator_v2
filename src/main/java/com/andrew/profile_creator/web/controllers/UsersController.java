@@ -93,7 +93,7 @@ class UsersController {
         if (userId != null) {
             updatedUser = appUserService.updateAppUser(userId, appUser);
         } else {
-            Long newUserId = appUserService.getUserByEmail(userEmail).getId();
+            Long newUserId = appUserService.getUserByEmail(userEmail).getUser_id();
             updatedUser = appUserService.updateAppUser(newUserId, appUser);
         }
 
@@ -113,7 +113,7 @@ class UsersController {
         if (userId != null) {
             updatedUser = appUserService.addRoleToUser(userId, roleName);
         } else {
-            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            Long findById = appUserService.getUserByEmail(userEmail).getUser_id();
             updatedUser = appUserService.addRoleToUser(findById,roleName);
         }
 
@@ -133,7 +133,7 @@ class UsersController {
         if (userId != null) {
             updatedUser = appUserService.removeRoleFromUser(userId, roleName);
         } else {
-            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            Long findById = appUserService.getUserByEmail(userEmail).getUser_id();
             updatedUser = appUserService.removeRoleFromUser(findById,roleName);
         }
 
@@ -151,7 +151,7 @@ class UsersController {
         if (userId != null) {
             appUserService.deleteUser(userId);
         } else {
-            Long findById = appUserService.getUserByEmail(userEmail).getId();
+            Long findById = appUserService.getUserByEmail(userEmail).getUser_id();
             appUserService.deleteUser(findById);
         }
     }

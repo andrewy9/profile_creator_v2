@@ -46,7 +46,7 @@ public class PersistenceAccountsAutoConfiguration {
     public LocalContainerEntityManagerFactoryBean accountsEntityManager(EntityManagerFactoryBuilder builder,
                                                                            @Qualifier("accountsDataSource") DataSource dataSource) {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
+        properties.put("hibernate.hbm2ddl.auto", "create");
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         return  builder
                 .dataSource(dataSource)

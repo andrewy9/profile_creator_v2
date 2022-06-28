@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class RoleRequestDTO {
     private String username;
-    private String roleName;
+    private String role_name;
 }

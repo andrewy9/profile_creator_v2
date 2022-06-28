@@ -26,9 +26,10 @@ public class AppUser {
             strategy = GenerationType.AUTO,
             generator = "users_sequence"
     )
-    private Long id;
+    private Long user_id;
     private String email;
-    private String name;
+    private String first_name;
+    private String last_name;
     private String password;
     private LocalDateTime created_at;
     @ManyToMany(fetch = EAGER)

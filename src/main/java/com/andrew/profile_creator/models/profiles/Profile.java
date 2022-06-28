@@ -1,5 +1,6 @@
 package com.andrew.profile_creator.models.profiles;
 
+import com.andrew.profile_creator.models.accounts.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,14 @@ public class Profile {
             strategy = GenerationType.AUTO,
             generator = "profile_sequence"
     )
-    private Long id;
-    private String profileName;
+    private Long profile_id;
+    private String name;
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(nullable = false, name = "app_user_id")
+//    private AppUser appUser;
+
     @ManyToMany(fetch = EAGER)
     private Collection<Employment> employment = new ArrayList<>();
+
 }
