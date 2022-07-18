@@ -21,7 +21,8 @@ public class AppUserMapper {
     public AppUserResponseDTO toResponseDto(AppUser appUser) {
         Long userId = appUser.getUser_id();
         String email = appUser.getEmail();
-        String name = appUser.getFirst_name();
+        String first_name = appUser.getFirst_name();
+        String last_name = appUser.getLast_name();
         LocalDateTime createdAt = appUser.getCreated_at();
         List<String> roles = appUser
                 .getRoles()
@@ -31,7 +32,7 @@ public class AppUserMapper {
         Boolean locked = appUser.getLocked();
         Boolean enabled = appUser.getEnabled();
 
-        return new AppUserResponseDTO(userId, email, name, createdAt, roles, locked, enabled);
+        return new AppUserResponseDTO(userId, email, first_name, last_name, createdAt, roles, locked, enabled);
     }
 
     public AppUser toEntity(AppUserWriteRequestDTO appUserDTO) {

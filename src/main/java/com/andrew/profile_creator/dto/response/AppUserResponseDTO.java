@@ -13,7 +13,8 @@ import java.util.Collection;
 public class AppUserResponseDTO {
     private Long user_id;
     private String email;
-    private String name;
+    private String first_name;
+    private String last_name;
     private LocalDateTime created_at;
     private Collection<String> roles;
     private Boolean locked;

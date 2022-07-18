@@ -30,11 +30,11 @@ public class Profile {
     private Long profile_id;
     private String name;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(nullable = false, name = "app_user_id")
-//    private AppUser appUser;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false, name = "app_user_id")
+    private AppUser appUser;
 
-    @ManyToMany(fetch = EAGER)
-    private Collection<Employment> employment = new ArrayList<>();
+//    @ManyToMany(fetch = EAGER)
+//    private Collection<Employment> employment = new ArrayList<>();
 
 }
